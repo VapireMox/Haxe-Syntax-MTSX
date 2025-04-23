@@ -1,0 +1,148 @@
+//制作者：袼缬-VapireMox
+{
+	name: ["Haxe", ".hx", ".hxs", ".hxc", ".hscript"]
+	styles: [
+		"MetadataName", #0049E8, #9CDEFF
+		"AttributeName", #FF1EC3, #F729FF
+		"VarName", #9444E9, #6D90FF
+		"PropName", #644C4C, #ECB3B3
+		"TypeName", #199A31, #12FF85
+		"HaxeKeyword", #BA5050, #D53B74
+		"NullName", #ff0000, #ff0000
+		"StringName", #FF8500, #FF7500
+		"AccessName", #117069, #80FDFF
+		"FunctionName", #C271B3, #C982BC
+		"ObjectName", #8754AC4E #9BC8AE
+		"CivilianName", #D0D014 #FFFE00
+		"SBName", #000000 #ffffff
+		"MetaComName", #004E39 #367EB5 @BU
+		"ExClassName", #B48300 #CDB600 @IU
+		"ImplClassName", #00AE7F #00AE7F @IU
+		"OperatorName", #00038E, #4798C4
+		"RegexName", #FA5AFF, #FC91FF
+		"ExtraName", #DD4040, #FC7777
+		"MathName" > "number"
+	]
+	defines: [
+		//对于haxe的prop属性匹配
+		"typeRegex": /\b[A-Z][A-z0-9_]*\b/
+		"propRegex": keywordsToRegex("get set default null never")
+		"fieldRegex": /\b[a-zA-Z_][A-z0-9_]*\b/
+		"funcRegex": /(function)\s*(?:([a-zA-Z_]*\b)\s*|)\s*\.*(\(.*\))/
+		"structureRegex": /(new) +(/ + include("typeRegex") + /)/
+		"forRegex": /for\s*\(\s*(/ + include("fieldRegex") + /)(?:\s*=>\s*(/ + include("fieldRegex") + /))?\s+in/
+
+		"Numbers": {
+			number: "2|8|10|16|F|E|P|"
+			iSuffixes: "l" // 整数后缀，可选，默认为空
+			fSuffixes: "f|d" // 浮点数后缀，可选，默认为空
+			style: "MathName" // 可选，默认为number
+		}
+		"Structures": {match: include("structureRegex"), 1: "HaxeKeyword", 2: "ImplClassName"}
+		"Operators": {match: /(?:<|>|=|\+|-|\*|\/|%|&|\||\^|~|!|\?|:|\.|,|;)/, 0: "OperatorName"}
+		"Types": {match: include("typeRegex"), 0: "TypeName"
+			0: {match: keywordsToRegex("Null Void"), 0: "NullName"}
+		}
+		"Forevers": {match: include("forRegex"), 1: "default"
+			0: {match: /\b(for|in)\b/, 0: "HaxeKeyword"}
+			0: {include: "Operators"}
+			0: {match: include("fieldRegex"), 0: "VarName"}
+		}
+		"Functions": {match: include("funcRegex"), 1: "HaxeKeyword", 2: "FunctionName", 3: "FunctionName"
+			3: {include: "Types"}
+			3: {match: include("fieldRegex"), 0: "VarName"}
+			3: {include: "SimpleString"}
+			3: {include: "DoubleString"}
+			3: {include: "Numbers"}
+			3: {include: "Operators"}
+			3: {include: "Access"}
+		}
+		"Access": {match: /\. *[a-zA-Z_$][\w$]*/,
+			0: "AccessName"
+			0: {include: "Types"}
+			0: {include: "Operators"}
+		}
+
+		"SimpleString": {
+			start: {match: /'/},
+			end: {match: /'/},
+			style: "StringName",
+			contains: [
+				{match: /\\(?:['a-zA-Z\\]|$)/, 0: "CivilianName"}
+				{match: /\$/ + /(/ + include("fieldRegex") + /)/, 0: "VarName"
+					1: {include: "Numbers"}
+					1: {include: "Access"}
+					1: {include: "Types"}
+					1: {match: /\S/, 0: "default"}
+				}
+				{
+					start: {match: /\$\{/}
+					end: {match: /\}/}
+					style: "VarName",
+					contains: [
+						{include: "SimpleString"}
+						{include: "DoubleString"}
+						{include: "Numbers"}
+						{include: "Forevers"}
+						{include: "Access"}
+						{include: "Operators"}
+						{include: "Functions"}
+						{include: "Types"}
+						{match: /\S/, 0: "default"}
+					]
+				}
+			]
+		}
+		"DoubleString": {
+			start: {match: /"/},
+			end: {match: /"/},
+			style: "StringName",
+			contains: [
+				{match: /\\(?:["a-zA-Z\\]|$)/, 0: "CivilianName"}
+			]
+		}
+	]
+	
+	comment: {startsWith: "//", insertSpace: true, addToContains: true}
+	comment: {startsWith: "/*", endsWith: "*/", insertSpace: true, addToContains: true}
+	
+	bracketPairs: ["{}", "[]", "<>", "()"]
+	contains: [
+		{match: /@(?:\:|$) */ + include("fieldRegex"), 0: "MetadataName"}
+		
+		{
+			start: {match: /~\//, 0: "RegexName"}
+			end: {match: /(?m)\/([a-z]*)|$/, 0: "RegexName", 1: "ExtraName"}
+			style: "string"
+			contains: {
+				{match: /\\\//, 0: "strEscape"}
+			}
+		}
+
+		{include: "SimpleString"}
+		{include: "DoubleString"}
+		{include: "Numbers"}
+		{include: "Access"}
+		{include: "Forevers"}
+		{include: "Operators"}
+		{include: "Functions"}
+		{include: "Structures"}
+		{include: "Types"}
+		
+		{match: /extends +(/ + include("typeRegex") + /)/, 0: "HaxeKeyword", 1: "ExClassName"}
+		{match: /implements +(/ + include("typeRegex") + /)/, 0: "HaxeKeyword", 1: "ImplClassName"}
+
+		{match: /\b(var|final|const) +(/ + include("fieldRegex") + /)\b(\([a-z]*,*\s*[a-z]*\))*/, 1: "HaxeKeyword", 2: "VarName", 
+			3: {match: include("propRegex"), 0: "PropName"
+				0: {match: /\b(null|never)\b/, 0: "NullName"}
+			}
+		}
+		
+		{match: keywordsToRegex("#if #elseif #else #end"), 0: "MetaComName"}
+
+		{match: keywordsToRegex("null"), 0: "NullName"}
+		{match: keywordsToRegex("public static inline macro from to private"), 0: "AttributeName"}
+		{match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if for while do var final const"), 0: "HaxeKeyword"}
+	]
+	codeFormatter: #BUILT_IN_JS_FORMATTER#
+}
