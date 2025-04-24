@@ -28,7 +28,7 @@
 		"typeRegex": /\b[A-Z][A-z0-9_]*\b/
 		"propRegex": keywordsToRegex("get set default null never")
 		"fieldRegex": /\b[a-zA-Z_][A-z0-9_]*\b/
-		"funcRegex": /(function)\s*(?:([a-zA-Z_]*\b)\s*|)\s*\.*(\(.*\))/
+		"funcRegex": /(function)\s*(?:([a-zA-Z_]*\b)\s*|)\s*\.*(\([^\(\)]*\))/
 		"structureRegex": /(new) +(/ + include("typeRegex") + /)/
 		"forRegex": /for\s*\(\s*(/ + include("fieldRegex") + /)(?:\s*=>\s*(/ + include("fieldRegex") + /))?\s+in/
 
@@ -38,6 +38,7 @@
 			fSuffixes: "f|d" // 浮点数后缀，可选，默认为空
 			style: "MathName" // 可选，默认为number
 		}
+		"RS": {match: keywordsToRegex("#if #elseif #else #end"), 0: "MetaComName"}
 		"Structures": {match: include("structureRegex"), 1: "HaxeKeyword", 2: "ImplClassName"}
 		"Operators": {match: /(?:<|>|=|\+|-|\*|\/|%|&|\||\^|~|!|\?|:|\.|,|;)/, 0: "OperatorName"}
 		"Types": {match: include("typeRegex"), 0: "TypeName"
@@ -46,6 +47,7 @@
 		"Forevers": {match: include("forRegex"), 1: "default"
 			0: {match: /\b(for|in)\b/, 0: "HaxeKeyword"}
 			0: {include: "Operators"}
+			0: {include: "RS"}
 			0: {match: include("fieldRegex"), 0: "VarName"}
 		}
 		"Functions": {match: include("funcRegex"), 1: "HaxeKeyword", 2: "FunctionName", 3: "FunctionName"
@@ -56,6 +58,7 @@
 			3: {include: "Numbers"}
 			3: {include: "Operators"}
 			3: {include: "Access"}
+			3: {include: "RS"}
 		}
 		"Access": {match: /\. *[a-zA-Z_$][\w$]*/,
 			0: "AccessName"
@@ -88,6 +91,7 @@
 						{include: "Operators"}
 						{include: "Functions"}
 						{include: "Types"}
+						{include: "RS"}
 						{match: /\S/, 0: "default"}
 					]
 				}
@@ -128,6 +132,7 @@
 		{include: "Functions"}
 		{include: "Structures"}
 		{include: "Types"}
+		{include: "RS"}
 		
 		{match: /extends +(/ + include("typeRegex") + /)/, 0: "HaxeKeyword", 1: "ExClassName"}
 		{match: /implements +(/ + include("typeRegex") + /)/, 0: "HaxeKeyword", 1: "ImplClassName"}
@@ -137,12 +142,10 @@
 				0: {match: /\b(null|never)\b/, 0: "NullName"}
 			}
 		}
-		
-		{match: keywordsToRegex("#if #elseif #else #end"), 0: "MetaComName"}
 
 		{match: keywordsToRegex("null"), 0: "NullName"}
 		{match: keywordsToRegex("public static inline macro from to private"), 0: "AttributeName"}
-		{match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if for while do var final const"), 0: "HaxeKeyword"}
+		{match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if else this for while do var final const"), 0: "HaxeKeyword"}
 	]
 	codeFormatter: #BUILT_IN_JS_FORMATTER#
 }
