@@ -28,7 +28,7 @@
 		"typeRegex": /\b[A-Z][A-z0-9_]*\b/
 		"propRegex": keywordsToRegex("get set default null never")
 		"fieldRegex": /\b[a-zA-Z_][A-z0-9_]*\b/
-		"funcRegex": /(function)\s*(?:([a-zA-Z_]*\b)\s*|)\s*\.*(\([^\(\)]*\))/
+		"funcRegex": /(function)\s*(?:([a-zA-Z_]*[A-z0-9_]*\b)\s*|)\s*\.*(\([^\(\)]*\))/
 		"structureRegex": /(new) +(/ + include("typeRegex") + /)/
 		"forRegex": /for\s*\(\s*(/ + include("fieldRegex") + /)(?:\s*=>\s*(/ + include("fieldRegex") + /))?\s+in/
 
@@ -51,6 +51,7 @@
 			0: {match: include("fieldRegex"), 0: "VarName"}
 		}
 		"Functions": {match: include("funcRegex"), 1: "HaxeKeyword", 2: "FunctionName", 3: "FunctionName"
+			3: {match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if else this for while do var final const"), 0: "HaxeKeyword"}
 			3: {include: "Types"}
 			3: {match: include("fieldRegex"), 0: "VarName"}
 			3: {include: "SimpleString"}
@@ -144,7 +145,7 @@
 		}
 
 		{match: keywordsToRegex("null"), 0: "NullName"}
-		{match: keywordsToRegex("public static inline macro from to private"), 0: "AttributeName"}
+		{match: keywordsToRegex("public extern static inline macro from to private"), 0: "AttributeName"}
 		{match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if else this for while do var final const"), 0: "HaxeKeyword"}
 	]
 	codeFormatter: #BUILT_IN_JS_FORMATTER#
