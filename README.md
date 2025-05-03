@@ -8,7 +8,7 @@ Haxe Syntax High-Lighting mtsx for MT Manager
 
 # 食用教程
 
-在仓库里下载[<ins>haxe.mtsx</ins>](https://github.com/VapireMox/Haxe-Syntax-MTSX/raw/refs/heads/main/haxe.mtsx)，随后在mt管理器中点击该文件弹出界面来进行安装，可能在某些版本的MT管理器版本无法使用。
+在仓库里下载[<ins>haxe.mtsx</ins>](https://github.com/VapireMox/Haxe-Syntax-MTSX/releases/download/0.0.1/haxe.mtsx)，随后在mt管理器中点击该文件弹出界面来进行安装，可能在某些版本的MT管理器版本无法使用。
 ![sb](https://raw.githubusercontent.com/VapireMox/Haxe-Syntax-MTSX/refs/heads/main/screenshots/Screenshot_2025-04-24-01-00-14-577_bin.mt.plus.canary.jpg)
 
 # 其他方面
