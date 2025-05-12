@@ -107,10 +107,10 @@
 			]
 		}
 	]
-	
+
 	comment: {startsWith: "//", insertSpace: true, addToContains: true}
 	comment: {startsWith: "/*", endsWith: "*/", insertSpace: true, addToContains: true}
-	
+
 	bracketPairs: ["{}", "[]", "<>", "()"]
 	contains: [
 		{match: /@(?:\:|$) */ + include("fieldRegex"), 0: "MetadataName"}
@@ -146,7 +146,7 @@
 
 		{match: keywordsToRegex("null"), 0: "NullName"}
 		{match: keywordsToRegex("public dynamic extern static inline macro from to private"), 0: "AttributeName"}
-		{match: keywordsToRegex("enum class typedef abstract package true false extends throw implements override try catch return break continue case default switch interface super as import function untyped if else this for while do var final const"), 0: "HaxeKeyword"}
+		{match: keywordsToRegex("enum class typedef abstract package cast new true false extends throw implements override try using is catch return break continue case default switch interface super as import function untyped if else this for while do var final const"), 0: "HaxeKeyword"}
 	]
 	codeFormatter: #BUILT_IN_JS_FORMATTER#
 }
